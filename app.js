@@ -234,66 +234,83 @@ const O = [
   ],
 ];
 
+let pieces = [Z, S, J, L, T, I, O];
+
 // spawning tetrominoes
 function Piece(tetromino) {
-  this.startOrientation = tetromino[0];
   this.tetromino = tetromino;
+  this.activeTetromino = tetromino[0];
 
   // spawn positions aka loading zone, x position will be generated randomly
   this.x = Math.floor(Math.random() * 6 + 1);
   this.y = 2;
-
-  /* add moveDown function that changes this.spawnY to ++ */
-  function moveDown() {
-    this.y = this.y + 1;
-  }
 }
 
-// randomly generate a tetromino and pass to Spawn
-var tetromino;
-function Generate() {
-  let tetrominos = [Z, S, J, L, T, I, O];
-  let spawnPiece = tetrominos[Math.floor(Math.random() * tetrominos.length)];
+let p = new Piece(pieces[0]);
 
-  tetromino = new Piece(spawnPiece);
-
-  for (r = 0; r < tetromino.startOrientation.length; r++) {
-    for (c = 0; c < tetromino.startOrientation.length; c++) {
-      if (tetromino.startOrientation[r][c]) {
-        square(
-          c + tetromino.x,
-          r + tetromino.y,
-          tetromino.startOrientation[r][c]
-        );
+// draw the piece to the canvas
+Piece.prototype.draw = function () {
+  for (r = 0; r < this.activeTetromino.length; r++) {
+    for (c = 0; c < this.activeTetromino.length; c++) {
+      if (this.activeTetromino[r][c]) {
+        square(c + this.x, r + this.y, this.activeTetromino[r][c]);
       }
     }
   }
-}
-
-Generate();
-
-Piece.prototype.moveDown = function () {
-  this.y++;
-  this.Generate();
 };
 
-// NEED TO MOVE THIS INSIDE SPAWN FUNCTION
-
-document.addEventListener("keydown", function (event) {
-  // change this to call piece.moveDown function inside Spawn
-  if (event.keyCode == 40) {
-    tetromino.moveDown();
-    /*tetromino.y = tetromino.y + 1;
-    for (r = 0; r < tetromino.startOrientation.length; r++) {
-      for (c = 0; c < tetromino.startOrientation.length; c++) {
-        if (tetromino.startOrientation[r][c]) {
-          square(
-            c + tetromino.x,
-            r + tetromino.y,
-            tetromino.startOrientation[r][c]
-          );
-        }
+//undraw previous piece when moving down
+Piece.prototype.undraw = function () {
+  for (r = 0; r < this.activeTetromino.length; r++) {
+    for (c = 0; c < this.activeTetromino.length; c++) {
+      if (this.activeTetromino[r][c]) {
+        square(c + this.x, r + this.y, 1);
       }
-    }*/
+    }
+  }
+};
+
+// move piece down
+Piece.prototype.moveDown = function () {
+  this.undraw();
+  this.y++;
+  this.draw();
+};
+
+// move piece right
+Piece.prototype.moveRight = function () {
+  this.undraw();
+  this.x++;
+  this.draw();
+};
+
+// move piece left
+Piece.prototype.moveLeft = function () {
+  this.undraw();
+  this.x = this.x - 1;
+  this.draw();
+};
+
+// piece moves down 1 unit every 1 second
+let dropStart = Date.now();
+function drop() {
+  let now = Date.now();
+  let diff = now - dropStart;
+  if (diff > 1000) {
+    p.moveDown();
+    dropStart = Date.now();
+  }
+  requestAnimationFrame(drop);
+}
+
+drop();
+
+document.addEventListener("keydown", (event) => {
+  if (event.keyCode == "40") {
+    p.moveDown();
+  } else if (event.keyCode == "39") {
+    p.moveRight();
+  } else if (event.keyCode == "37") {
+    p.moveLeft();
   }
 });
