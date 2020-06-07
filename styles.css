@@ -1,0 +1,16 @@
+/*
+
+10 by 20 is the classic size of the tetris well 
+
+*/
+
+.wrapper {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  justify-content: center;
+}
+
+canvas {
+  border: 1px solid black;
+}
