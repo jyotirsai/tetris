@@ -291,6 +291,17 @@ Piece.prototype.moveLeft = function () {
   this.draw();
 };
 
+// keyboard controls to control tetrominoes
+document.addEventListener("keydown", (event) => {
+  if (event.keyCode == "40") {
+    p.moveDown();
+  } else if (event.keyCode == "39") {
+    p.moveRight();
+  } else if (event.keyCode == "37") {
+    p.moveLeft();
+  }
+});
+
 // piece moves down 1 unit every 1 second
 let dropStart = Date.now();
 function drop() {
@@ -305,12 +316,4 @@ function drop() {
 
 drop();
 
-document.addEventListener("keydown", (event) => {
-  if (event.keyCode == "40") {
-    p.moveDown();
-  } else if (event.keyCode == "39") {
-    p.moveRight();
-  } else if (event.keyCode == "37") {
-    p.moveLeft();
-  }
-});
+// cant allow pieces to move past walls
