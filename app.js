@@ -270,7 +270,7 @@ Piece.prototype.undraw = function () {
   }
 };
 
-// move piece down
+// move piece down, piece cant move past walls
 Piece.prototype.moveDown = function () {
   if (this.y < 18) {
     this.undraw();
@@ -281,27 +281,31 @@ Piece.prototype.moveDown = function () {
 
 // move piece right, piece cant move past walls
 Piece.prototype.moveRight = function () {
-  if (this.tetromino == I) {
-    if (this.x < 6) {
-      this.undraw();
-      this.x++;
-      this.draw();
-    }
-  } else {
-    if (this.x < 7) {
-      this.undraw();
-      this.x++;
-      this.draw();
+  if (this.y < 18) {
+    if (this.tetromino == I) {
+      if (this.x < 6) {
+        this.undraw();
+        this.x++;
+        this.draw();
+      }
+    } else {
+      if (this.x < 7) {
+        this.undraw();
+        this.x++;
+        this.draw();
+      }
     }
   }
 };
 
 // move piece left, piece cant move past walls
 Piece.prototype.moveLeft = function () {
-  if (this.x > 0) {
-    this.undraw();
-    this.x = this.x - 1;
-    this.draw();
+  if (this.y < 18) {
+    if (this.x > 0) {
+      this.undraw();
+      this.x = this.x - 1;
+      this.draw();
+    }
   }
 };
 
@@ -330,4 +334,4 @@ function drop() {
 
 drop();
 
-// cant allow pieces to move past walls
+// need to lock pieces when they come into contact with another piece
