@@ -272,23 +272,37 @@ Piece.prototype.undraw = function () {
 
 // move piece down
 Piece.prototype.moveDown = function () {
-  this.undraw();
-  this.y++;
-  this.draw();
+  if (this.y < 18) {
+    this.undraw();
+    this.y++;
+    this.draw();
+  }
 };
 
-// move piece right
+// move piece right, piece cant move past walls
 Piece.prototype.moveRight = function () {
-  this.undraw();
-  this.x++;
-  this.draw();
+  if (this.tetromino == I) {
+    if (this.x < 6) {
+      this.undraw();
+      this.x++;
+      this.draw();
+    }
+  } else {
+    if (this.x < 7) {
+      this.undraw();
+      this.x++;
+      this.draw();
+    }
+  }
 };
 
-// move piece left
+// move piece left, piece cant move past walls
 Piece.prototype.moveLeft = function () {
-  this.undraw();
-  this.x = this.x - 1;
-  this.draw();
+  if (this.x > 0) {
+    this.undraw();
+    this.x = this.x - 1;
+    this.draw();
+  }
 };
 
 // keyboard controls to control tetrominoes
