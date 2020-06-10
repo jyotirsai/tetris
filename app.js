@@ -51,16 +51,18 @@ function square(x, y, color) {
 }
 
 // initialize the board
-
 var board = [];
 for (var i = 0; i < width; i++) {
-  board[i] = new Array(height);
+  board[i] = [];
+  for (var j = 0; j < height; j++) {
+    board[i][j] = 1;
+  }
 }
 
 function initBoard() {
   for (var i = 0; i < width; i++) {
     for (var j = 0; j < height; j++) {
-      square(i, j, 1);
+      square(i, j, board[i][j]);
     }
   }
 }
@@ -254,6 +256,7 @@ Piece.prototype.draw = function () {
     for (c = 0; c < this.activeTetromino.length; c++) {
       if (this.activeTetromino[r][c]) {
         square(c + this.x, r + this.y, this.activeTetromino[r][c]);
+        board[c + this.x][r + this.y] = this.activeTetromino[r][c];
       }
     }
   }
@@ -265,6 +268,7 @@ Piece.prototype.undraw = function () {
     for (c = 0; c < this.activeTetromino.length; c++) {
       if (this.activeTetromino[r][c]) {
         square(c + this.x, r + this.y, 1);
+        board[c + this.x][r + this.y] = 1;
       }
     }
   }
@@ -334,4 +338,10 @@ function drop() {
 
 drop();
 
-// need to lock pieces when they come into contact with another piece
+// detect collisions
+Piece.prototype.hitbox = function (dx, dy, Tetromino) {
+  /* for moveRight --> (1,0,this.activeTetromino)
+     for moveLeft --> (-1,0,this.activeTetromino)
+     for moveDown --> (0,1,this.activeTetromino)
+  */
+};
