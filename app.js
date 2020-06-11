@@ -304,6 +304,7 @@ Piece.prototype.moveRight = function () {
 
 // move piece left, piece cant move past walls
 Piece.prototype.moveLeft = function () {
+  this.detect(-1, 0, this.activeTetromino);
   if (this.y < 18) {
     if (this.x > 0) {
       this.undraw();
@@ -338,10 +339,23 @@ function drop() {
 
 drop();
 
-// detect collisions
-Piece.prototype.hitbox = function (dx, dy, Tetromino) {
+// detect other pieces
+Piece.prototype.detect = function (x, y, activeTetromino) {
   /* for moveRight --> (1,0,this.activeTetromino)
      for moveLeft --> (-1,0,this.activeTetromino)
      for moveDown --> (0,1,this.activeTetromino)
   */
+  for (r = 0; r < activeTetromino.length; r++) {
+    for (c = 0; c < activeTetromino.length; c++) {
+      if (!activeTetromino[r][c]) {
+        continue;
+      }
+
+      dx = c + this.x + x;
+      dy = r + this.y + y;
+      if (dx >= 0) {
+        console.log(board[dx][dy]);
+      }
+    }
+  }
 };
