@@ -285,18 +285,20 @@ Piece.prototype.moveDown = function () {
 
 // move piece right, piece cant move past walls
 Piece.prototype.moveRight = function () {
-  if (this.y < 18) {
-    if (this.tetromino == I) {
-      if (this.x < 6) {
-        this.undraw();
-        this.x++;
-        this.draw();
-      }
-    } else {
-      if (this.x < 7) {
-        this.undraw();
-        this.x++;
-        this.draw();
+  if (this.detect(1, 0, this.activeTetromino) == true) {
+    if (this.y < 18) {
+      if (this.tetromino == I) {
+        if (this.x < 6) {
+          this.undraw();
+          this.x++;
+          this.draw();
+        }
+      } else {
+        if (this.x < 7) {
+          this.undraw();
+          this.x++;
+          this.draw();
+        }
       }
     }
   }
@@ -304,12 +306,13 @@ Piece.prototype.moveRight = function () {
 
 // move piece left, piece cant move past walls
 Piece.prototype.moveLeft = function () {
-  this.detect(-1, 0, this.activeTetromino);
-  if (this.y < 18) {
-    if (this.x > 0) {
-      this.undraw();
-      this.x = this.x - 1;
-      this.draw();
+  if (this.detect(-1, 0, this.activeTetromino) == true) {
+    if (this.y < 18) {
+      if (this.x > 0) {
+        this.undraw();
+        this.x = this.x - 1;
+        this.draw();
+      }
     }
   }
 };
@@ -350,10 +353,12 @@ Piece.prototype.detect = function (x, y, activeTetromino) {
       if (!activeTetromino[r][c]) {
         continue;
       }
-
-      dx = c + this.x + x;
-      dy = r + this.y + y;
+      let dx = c + this.x + x;
+      let dy = r + this.y + y;
       if (dx >= 0) {
+        if (board[dx][dy] != 1) {
+          return true;
+        }
         console.log(board[dx][dy]);
       }
     }
