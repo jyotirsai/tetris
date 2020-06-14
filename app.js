@@ -256,7 +256,6 @@ Piece.prototype.draw = function () {
     for (c = 0; c < this.activeTetromino.length; c++) {
       if (this.activeTetromino[r][c]) {
         square(c + this.x, r + this.y, this.activeTetromino[r][c]);
-        //board[r + this.y][c + this.x] = this.activeTetromino[r][c];
       }
     }
   }
@@ -268,7 +267,6 @@ Piece.prototype.undraw = function () {
     for (c = 0; c < this.activeTetromino.length; c++) {
       if (this.activeTetromino[r][c]) {
         square(c + this.x, r + this.y, 0);
-        //board[r + this.y][c + this.x] = 0;
       }
     }
   }
@@ -280,6 +278,8 @@ Piece.prototype.moveDown = function () {
     this.undraw();
     this.y++;
     this.draw();
+  } else {
+    this.lock();
   }
 };
 
@@ -350,3 +350,18 @@ Piece.prototype.detect = function (x, y, activeTetromino) {
   }
   return false;
 };
+
+// lock piece in place
+
+Piece.prototype.lock = function () {
+  for (r = 0; r < this.activeTetromino.length; r++) {
+    for (c = 0; c < this.activeTetromino.length; c++) {
+      if (!this.activeTetromino[r][c]) {
+        continue;
+      }
+      board[this.y + r][this.x + c] = 1;
+    }
+  }
+};
+
+// Generate new piece
