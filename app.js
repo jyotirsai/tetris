@@ -20,7 +20,7 @@ ctx.scale(square_size, square_size);
 function square(x, y, color) {
   // pass a number which represents a color
   switch (color) {
-    case 1:
+    case 0:
       setColor = "white";
       break;
     case 2:
@@ -52,17 +52,17 @@ function square(x, y, color) {
 
 // initialize the board
 var board = [];
-for (var i = 0; i < width; i++) {
-  board[i] = [];
-  for (var j = 0; j < height; j++) {
-    board[i][j] = 1;
+for (var r = 0; r < height; r++) {
+  board[r] = [];
+  for (var c = 0; c < width; c++) {
+    board[r][c] = 0;
   }
 }
 
 function initBoard() {
-  for (var i = 0; i < width; i++) {
-    for (var j = 0; j < height; j++) {
-      square(i, j, board[i][j]);
+  for (var r = 0; r < height; r++) {
+    for (var c = 0; c < width; c++) {
+      square(c, r, board[r][c]);
     }
   }
 }
@@ -256,7 +256,7 @@ Piece.prototype.draw = function () {
     for (c = 0; c < this.activeTetromino.length; c++) {
       if (this.activeTetromino[r][c]) {
         square(c + this.x, r + this.y, this.activeTetromino[r][c]);
-        board[c + this.x][r + this.y] = this.activeTetromino[r][c];
+        //board[r + this.y][c + this.x] = this.activeTetromino[r][c];
       }
     }
   }
@@ -267,8 +267,8 @@ Piece.prototype.undraw = function () {
   for (r = 0; r < this.activeTetromino.length; r++) {
     for (c = 0; c < this.activeTetromino.length; c++) {
       if (this.activeTetromino[r][c]) {
-        square(c + this.x, r + this.y, 1);
-        board[c + this.x][r + this.y] = 1;
+        square(c + this.x, r + this.y, 0);
+        //board[r + this.y][c + this.x] = 0;
       }
     }
   }
@@ -276,7 +276,7 @@ Piece.prototype.undraw = function () {
 
 // move piece down, piece cant move past walls
 Piece.prototype.moveDown = function () {
-  if (this.y < 18) {
+  if (!this.detect(0, 1, this.activeTetromino)) {
     this.undraw();
     this.y++;
     this.draw();
@@ -285,35 +285,19 @@ Piece.prototype.moveDown = function () {
 
 // move piece right, piece cant move past walls
 Piece.prototype.moveRight = function () {
-  if (this.detect(1, 0, this.activeTetromino) == true) {
-    if (this.y < 18) {
-      if (this.tetromino == I) {
-        if (this.x < 6) {
-          this.undraw();
-          this.x++;
-          this.draw();
-        }
-      } else {
-        if (this.x < 7) {
-          this.undraw();
-          this.x++;
-          this.draw();
-        }
-      }
-    }
+  if (!this.detect(1, 0, this.activeTetromino)) {
+    this.undraw();
+    this.x++;
+    this.draw();
   }
 };
 
 // move piece left, piece cant move past walls
 Piece.prototype.moveLeft = function () {
-  if (this.detect(-1, 0, this.activeTetromino) == true) {
-    if (this.y < 18) {
-      if (this.x > 0) {
-        this.undraw();
-        this.x = this.x - 1;
-        this.draw();
-      }
-    }
+  if (!this.detect(-1, 0, this.activeTetromino)) {
+    this.undraw();
+    this.x = this.x - 1;
+    this.draw();
   }
 };
 
@@ -355,12 +339,14 @@ Piece.prototype.detect = function (x, y, activeTetromino) {
       }
       let dx = c + this.x + x;
       let dy = r + this.y + y;
-      if (dx >= 0) {
-        if (board[dx][dy] != 1) {
-          return true;
-        }
-        console.log(board[dx][dy]);
+
+      if (dx < 0 || dx >= width || dy >= height) {
+        return true;
+      }
+      if (board[dy][dx]) {
+        return true;
       }
     }
   }
+  return false;
 };
