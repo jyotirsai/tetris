@@ -318,6 +318,8 @@ document.addEventListener("keydown", (event) => {
     p.moveRight();
   } else if (event.keyCode == "37") {
     p.moveLeft();
+  } else if (event.keyCode == "38") {
+    p.rotate();
   }
 });
 
@@ -366,7 +368,6 @@ Piece.prototype.detect = function (x, y, activeTetromino) {
 };
 
 // lock piece in place
-
 Piece.prototype.lock = function () {
   for (r = 0; r < this.activeTetromino.length; r++) {
     for (c = 0; c < this.activeTetromino.length; c++) {
@@ -382,5 +383,3 @@ Piece.prototype.lock = function () {
     }
   }
 };
-
-// Game over
