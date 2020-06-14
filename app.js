@@ -236,7 +236,14 @@ const O = [
   ],
 ];
 
-let pieces = [Z, S, J, L, T, I, O];
+// generate a random tetromino
+function Generate() {
+  let pieces = [Z, S, J, L, T, I, O];
+  let random = Math.floor(Math.random() * pieces.length);
+  return new Piece(pieces[random]);
+}
+
+let p = Generate();
 
 // spawning tetrominoes
 function Piece(tetromino) {
@@ -245,10 +252,8 @@ function Piece(tetromino) {
 
   // spawn positions aka loading zone, x position will be generated randomly
   this.x = Math.floor(Math.random() * 6 + 1);
-  this.y = 2;
+  this.y = -1;
 }
-
-let p = new Piece(pieces[0]);
 
 // draw the piece to the canvas
 Piece.prototype.draw = function () {
@@ -280,6 +285,7 @@ Piece.prototype.moveDown = function () {
     this.draw();
   } else {
     this.lock();
+    p = Generate();
   }
 };
 
@@ -301,6 +307,9 @@ Piece.prototype.moveLeft = function () {
   }
 };
 
+// rotate piece
+Piece.prototype.rotate = function () {};
+
 // keyboard controls to control tetrominoes
 document.addEventListener("keydown", (event) => {
   if (event.keyCode == "40") {
@@ -314,6 +323,7 @@ document.addEventListener("keydown", (event) => {
 
 // piece moves down 1 unit every 1 second
 let dropStart = Date.now();
+let gameOver = false;
 function drop() {
   let now = Date.now();
   let diff = now - dropStart;
@@ -321,7 +331,9 @@ function drop() {
     p.moveDown();
     dropStart = Date.now();
   }
-  requestAnimationFrame(drop);
+  if (!gameOver) {
+    requestAnimationFrame(drop);
+  }
 }
 
 drop();
@@ -339,7 +351,9 @@ Piece.prototype.detect = function (x, y, activeTetromino) {
       }
       let dx = c + this.x + x;
       let dy = r + this.y + y;
-
+      if (dy < 0) {
+        continue;
+      }
       if (dx < 0 || dx >= width || dy >= height) {
         return true;
       }
@@ -359,9 +373,14 @@ Piece.prototype.lock = function () {
       if (!this.activeTetromino[r][c]) {
         continue;
       }
+      if (this.y + r < 0) {
+        alert("Game Over");
+        gameOver = true;
+        break;
+      }
       board[this.y + r][this.x + c] = 1;
     }
   }
 };
 
-// Generate new piece
+// Game over
