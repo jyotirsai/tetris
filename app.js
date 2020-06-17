@@ -248,8 +248,8 @@ let p = Generate();
 // spawning tetrominoes
 function Piece(tetromino) {
   this.tetromino = tetromino;
-  this.activeTetromino = tetromino[0];
-
+  this.tetrominoType = 0;
+  this.activeTetromino = this.tetromino[this.tetrominoType];
   // spawn positions aka loading zone, x position will be generated randomly
   this.x = Math.floor(Math.random() * 6 + 1);
   this.y = -1;
@@ -308,7 +308,28 @@ Piece.prototype.moveLeft = function () {
 };
 
 // rotate piece
-Piece.prototype.rotate = function () {};
+Piece.prototype.rotate = function () {
+  let nextType = this.tetromino[
+    (this.tetrominoType + 1) % this.tetromino.length
+  ];
+  let kick = 0;
+
+  if (this.detect(0, 0, nextType)) {
+    if (this.x > width / 2) {
+      kick = -1;
+    } else {
+      kick = 1;
+    }
+  }
+
+  if (!this.detect(kick, 0, nextType)) {
+    this.undraw();
+    this.x += kick;
+    this.tetrominoType = (this.tetrominoType + 1) % this.tetromino.length;
+    this.activeTetromino = this.tetromino[this.tetrominoType];
+    this.draw();
+  }
+};
 
 // keyboard controls to control tetrominoes
 document.addEventListener("keydown", (event) => {
