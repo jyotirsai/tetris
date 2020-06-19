@@ -398,7 +398,6 @@ Piece.prototype.detect = function (x, y, activeTetromino) {
   return false;
 };
 
-let score = 0;
 // lock piece in place
 Piece.prototype.lock = function () {
   for (r = 0; r < this.activeTetromino.length; r++) {
@@ -412,23 +411,6 @@ Piece.prototype.lock = function () {
         break;
       }
       board[this.y + r][this.x + c] = 1;
-    }
-  }
-  for (r = 0; r < height; r++) {
-    let isRowFull = true;
-    for (c = 0; c < width; c++) {
-      isRowFull = isRowFull && board[r][c] != 0;
-    }
-    if (isRowFull) {
-      for (y = r; y > 1; y--) {
-        for (c = 0; c < width; c++) {
-          board[y][c] = board[y - 1][c];
-        }
-      }
-      for (c = 0; c < width; c++) {
-        board[0][c] = 0;
-      }
-      score += 10;
     }
   }
 };
