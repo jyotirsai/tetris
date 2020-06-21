@@ -51,7 +51,7 @@ function square(x, y, color) {
 }
 
 // initialize the board
-var board = [];
+let board = [];
 for (var r = 0; r < height; r++) {
   board[r] = [];
   for (var c = 0; c < width; c++) {
@@ -250,16 +250,30 @@ function Piece(tetromino) {
   this.tetromino = tetromino;
   this.tetrominoType = 0;
   this.activeTetromino = this.tetromino[this.tetrominoType];
-  let pieceColorNumbers = {
-    Z: 2,
-    S: 3,
-    J: 4,
-    L: 5,
-    T: 6,
-    I: 7,
-    O: 8,
-  };
-  this.colour = pieceColorNumbers.tetromino;
+  switch (tetromino) {
+    case Z:
+      this.colour = 2;
+      break;
+    case S:
+      this.colour = 3;
+      break;
+    case J:
+      this.colour = 4;
+      break;
+    case L:
+      this.colour = 5;
+      break;
+    case T:
+      this.colour = 6;
+      break;
+    case I:
+      this.colour = 7;
+      break;
+    case O:
+      this.colour = 8;
+      break;
+  }
+
   // spawn positions aka loading zone, x position will be generated randomly
   this.x = Math.floor(Math.random() * 6 + 1);
   this.y = -1;
@@ -270,7 +284,7 @@ Piece.prototype.draw = function () {
   for (r = 0; r < this.activeTetromino.length; r++) {
     for (c = 0; c < this.activeTetromino.length; c++) {
       if (this.activeTetromino[r][c]) {
-        square(c + this.x, r + this.y, this.activeTetromino[r][c]);
+        square(c + this.x, r + this.y, this.colour);
       }
     }
   }
@@ -399,6 +413,7 @@ Piece.prototype.detect = function (x, y, activeTetromino) {
   return false;
 };
 
+let score = 0;
 // lock piece in place
 Piece.prototype.lock = function () {
   for (r = 0; r < this.activeTetromino.length; r++) {
@@ -411,20 +426,33 @@ Piece.prototype.lock = function () {
         gameOver = true;
         break;
       }
-      board[this.y + r][this.x + c] = 1;
+      board[this.y + r][this.x + c] = this.colour;
     }
   }
+
+  for (r = 0; r < height; r++) {
+    if (checkRow()) {
+      for (y = r; y > 1; y--) {
+        for (c = 0; c < width; c++) {
+          board[y][c] = 0;
+        }
+      }
+      for (c = 0; c < width; c++) {
+        board[0][c] = 0;
+      }
+      score += 10;
+    }
+  }
+  initBoard();
 };
 
-// clear row
-
-const isRowFull = (currentValue) => currentValue == 1;
+// check if row is full
+const isRowFull = (currentValue) => currentValue != 0;
 function checkRow() {
   for (var r = 0; r < height; r++) {
     for (var c = 0; c < width; c++) {
       if (board[r].every(isRowFull)) {
-        alert("it worked");
-        break;
+        return true;
       }
     }
   }
