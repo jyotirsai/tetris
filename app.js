@@ -296,6 +296,7 @@ Piece.prototype.moveDown = function () {
   } else {
     this.lock();
     p = Generate();
+    checkRow();
   }
 };
 
@@ -414,3 +415,17 @@ Piece.prototype.lock = function () {
     }
   }
 };
+
+// clear row
+
+const isRowFull = (currentValue) => currentValue == 1;
+function checkRow() {
+  for (var r = 0; r < height; r++) {
+    for (var c = 0; c < width; c++) {
+      if (board[r].every(isRowFull)) {
+        alert("it worked");
+        break;
+      }
+    }
+  }
+}
