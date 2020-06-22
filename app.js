@@ -310,7 +310,6 @@ Piece.prototype.moveDown = function () {
   } else {
     this.lock();
     p = Generate();
-    checkRow();
   }
 };
 
@@ -429,12 +428,15 @@ Piece.prototype.lock = function () {
       board[this.y + r][this.x + c] = this.colour;
     }
   }
-
   for (r = 0; r < height; r++) {
-    if (checkRow()) {
+    let isRowFull = true;
+    for (c = 0; c < width; c++) {
+      isRowFull = isRowFull && board[r][c] != 0;
+    }
+    if (isRowFull) {
       for (y = r; y > 1; y--) {
         for (c = 0; c < width; c++) {
-          board[y][c] = 0;
+          board[y][c] = board[y - 1][c];
         }
       }
       for (c = 0; c < width; c++) {
@@ -445,15 +447,3 @@ Piece.prototype.lock = function () {
   }
   initBoard();
 };
-
-// check if row is full
-const isRowFull = (currentValue) => currentValue != 0;
-function checkRow() {
-  for (var r = 0; r < height; r++) {
-    for (var c = 0; c < width; c++) {
-      if (board[r].every(isRowFull)) {
-        return true;
-      }
-    }
-  }
-}
